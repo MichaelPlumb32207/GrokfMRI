@@ -1,5 +1,12 @@
 # PROGRESS
 
+## 2026-07-26 — Layout: list left, scan right, detail below
+
+- Home layout: timeline/workspaces left, compact sidebar activity scan right (Expand/fullscreen still)
+- Event detail full-width **below** list+scan (not a side drawer stealing list space)
+- Cap bar width so sparse multi-day charts don’t stretch into one huge slab
+- Removed full-width scan strip + Scan tab from home (full scan remains at `/scan`)
+
 ## 2026-07-26 — Support, optionals, honest demo data
 
 - Support / donate handles in README, USER_GUIDE, app footer, share.html (BTC / Lightning / Cash App)

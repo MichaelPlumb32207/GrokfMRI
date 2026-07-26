@@ -30,9 +30,7 @@ export function Dashboard() {
   } = useMemorySnapshot();
 
   const [selectedEvent, setSelectedEvent] = useState<MemoryEvent | null>(null);
-  const [tab, setTab] = useState<"timeline" | "workspaces" | "scan">(
-    "timeline",
-  );
+  const [tab, setTab] = useState<"timeline" | "workspaces">("timeline");
   const [scanExpanded, setScanExpanded] = useState(false);
 
   const requestBrowserFullscreen = useCallback(() => {
@@ -76,7 +74,7 @@ export function Dashboard() {
               href="/scan"
               className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-300 hover:border-emerald-400/50"
             >
-              Activity scan
+              Full scan page
             </Link>
             <button
               type="button"
@@ -104,23 +102,12 @@ export function Dashboard() {
 
         {snap ? <HealthBar health={snap.health} /> : null}
 
-        {snap ? (
-          <ActivityScan
-            events={filteredEvents}
-            size="compact"
-            onExpand={() => setScanExpanded(true)}
-            onRequestFullscreen={requestBrowserFullscreen}
-            fullPageHref="/scan"
-          />
-        ) : null}
-
         <section className="flex flex-wrap items-center gap-3 rounded-xl border border-zinc-800 bg-zinc-900/40 p-3">
           <div className="flex items-center gap-1 rounded-lg bg-zinc-950 p-0.5">
             {(
               [
                 ["timeline", "Timeline"],
                 ["workspaces", "Workspaces"],
-                ["scan", "Scan"],
               ] as const
             ).map(([id, label]) => (
               <button
@@ -187,19 +174,16 @@ export function Dashboard() {
           </span>
         </section>
 
-        <div
-          className={`grid flex-1 gap-4 ${
-            selectedEvent ? "lg:grid-cols-[1fr_360px]" : "grid-cols-1"
-          }`}
-        >
-          <div className="min-w-0 space-y-4">
+        {/* Primary row: entries (left) + compact scan (right) */}
+        <div className="grid flex-1 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(240px,300px)]">
+          <div className="min-w-0">
             {tab === "timeline" ? (
               <Timeline
                 events={filteredEvents}
                 selectedId={selectedEvent?.id ?? null}
                 onSelect={setSelectedEvent}
               />
-            ) : tab === "workspaces" ? (
+            ) : (
               <WorkspaceGrid
                 workspaces={snap?.workspaces ?? []}
                 selectedId={workspaceFilter}
@@ -208,39 +192,54 @@ export function Dashboard() {
                   if (id) setTab("timeline");
                 }}
               />
-            ) : (
+            )}
+          </div>
+
+          <aside className="min-w-0 lg:sticky lg:top-4 lg:self-start">
+            {snap ? (
               <ActivityScan
                 events={filteredEvents}
-                size="default"
+                size="sidebar"
                 onExpand={() => setScanExpanded(true)}
                 onRequestFullscreen={requestBrowserFullscreen}
                 fullPageHref="/scan"
               />
+            ) : (
+              <div className="rounded-xl border border-dashed border-zinc-800 p-6 text-center text-xs text-zinc-500">
+                Scan loads with snapshot…
+              </div>
             )}
-
-            {snap ? (
-              <MemoryPanel
-                global={snap.global}
-                workspaces={snap.workspaces}
-                focusWorkspaceId={
-                  workspaceFilter && workspaceFilter !== "global"
-                    ? workspaceFilter
-                    : null
-                }
-              />
-            ) : null}
-          </div>
-
-          {selectedEvent ? (
-            <div className="min-h-[480px] overflow-hidden rounded-xl border border-zinc-800 lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)]">
-              <EventDetail
-                key={selectedEvent.id}
-                event={selectedEvent}
-                onClose={() => setSelectedEvent(null)}
-              />
-            </div>
-          ) : null}
+            <p className="mt-2 text-center text-[10px] text-zinc-600 lg:text-left">
+              Small by design — Expand or Full scan for hour heatmap & lanes
+            </p>
+          </aside>
         </div>
+
+        {/* Detail spans full width below entries + scan */}
+        {selectedEvent ? (
+          <EventDetail
+            key={selectedEvent.id}
+            event={selectedEvent}
+            layout="full"
+            onClose={() => setSelectedEvent(null)}
+          />
+        ) : (
+          <div className="rounded-xl border border-dashed border-zinc-800/80 bg-zinc-900/20 px-4 py-6 text-center text-xs text-zinc-600">
+            Select an event on the left to open details here (full width)
+          </div>
+        )}
+
+        {snap ? (
+          <MemoryPanel
+            global={snap.global}
+            workspaces={snap.workspaces}
+            focusWorkspaceId={
+              workspaceFilter && workspaceFilter !== "global"
+                ? workspaceFilter
+                : null
+            }
+          />
+        ) : null}
       </main>
 
       <footer className="border-t border-zinc-900">

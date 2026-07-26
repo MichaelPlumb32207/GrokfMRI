@@ -26,3 +26,4 @@ Placement: `spine` | `rib` + outcome leg name
 | ENH-007 | P2 | rib · Leg 4 | done | Non-localhost host safety banner |
 | ENH-008 | P2 | rib · Leg 1 | done | Synthetic multi-day demo store (`npm run demo`) + demo banner |
 | ENH-009 | P2 | — | done | Support/donate links (README, USER_GUIDE, footer); CONTRIBUTING.md |
+| ENH-010 | P1 | rib · Leg 1–3 | done | Home layout: list left, sidebar scan right, full-width detail below; bar width cap |

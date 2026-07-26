@@ -33,7 +33,7 @@ This app only visualizes the third layer.
 
 - Primary data viz is **Activity scan**: stacked day×type bars + workspace intensity lanes
 - Reuses event type palette (emerald flush, sky session-end, violet remember, amber dream)
-- Surfaces: compact home strip, Scan tab, expand overlay, browser fullscreen, `/scan` page
+- Surfaces: home **sidebar** scan (right) + expand overlay + `/scan` full page; list left; detail full-width below
 - Aggregation is pure (`buildScanSeries`); chart is filter-aware
 - Scan-line animation for sparse charts; hour-of-day heatmap also available when times exist
 - Public readiness: MIT license, SECURITY.md, share one-pager; fixtures use demo paths

@@ -11,7 +11,7 @@ import {
 } from "@/lib/scan-aggregate";
 import { EVENT_COLORS } from "@/lib/format";
 
-export type ActivityScanSize = "compact" | "default" | "full";
+export type ActivityScanSize = "sidebar" | "compact" | "default" | "full";
 
 export function ActivityScan({
   events,
@@ -38,18 +38,40 @@ export function ActivityScan({
   } | null>(null);
   const gradientId = useId().replace(/:/g, "");
 
+  const isSidebar = size === "sidebar";
   const chartH =
-    size === "compact" ? 120 : size === "full" ? 320 : 200;
-  const chartPad = { top: 16, right: 12, bottom: 36, left: 36 };
-  const width = size === "full" ? 960 : size === "compact" ? 640 : 720;
+    size === "sidebar"
+      ? 100
+      : size === "compact"
+        ? 120
+        : size === "full"
+          ? 320
+          : 200;
+  const chartPad = isSidebar
+    ? { top: 10, right: 8, bottom: 28, left: 28 }
+    : { top: 16, right: 12, bottom: 36, left: 36 };
+  const width =
+    size === "full" ? 960 : size === "sidebar" ? 280 : size === "compact" ? 640 : 720;
   const innerW = width - chartPad.left - chartPad.right;
   const innerH = chartH - chartPad.top - chartPad.bottom;
 
+  // Cap bar width so sparse series (1–few days) don't stretch into a huge slab.
   const barGap = series.days.length > 40 ? 1 : series.days.length > 20 ? 2 : 4;
+  const maxBarW = isSidebar ? 22 : size === "compact" ? 36 : 48;
+  const naturalBarW =
+    series.days.length === 0
+      ? 0
+      : (innerW - barGap * Math.max(0, series.days.length - 1)) /
+        series.days.length;
   const barW =
     series.days.length === 0
       ? 0
-      : Math.max(3, (innerW - barGap * (series.days.length - 1)) / series.days.length);
+      : Math.max(4, Math.min(maxBarW, naturalBarW));
+  const usedW =
+    series.days.length === 0
+      ? 0
+      : series.days.length * barW + (series.days.length - 1) * barGap;
+  const barOffsetX = Math.max(0, (innerW - usedW) / 2);
 
   const hoveredBucket: ScanDayBucket | null = hover
     ? (series.days.find((d) => d.day === hover.day) ?? null)
@@ -58,52 +80,60 @@ export function ActivityScan({
   return (
     <section
       className={`rounded-xl border border-zinc-800 bg-zinc-900/60 ${
-        size === "full" ? "p-5" : "p-4"
+        size === "full" ? "p-5" : isSidebar ? "p-3" : "p-4"
       }`}
     >
       {showChrome ? (
-        <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
+        <div
+          className={`mb-2 flex gap-2 ${
+            isSidebar
+              ? "flex-col"
+              : "mb-3 flex-wrap items-start justify-between"
+          }`}
+        >
           <div>
             <div className="flex items-center gap-2">
               <span
                 className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"
                 aria-hidden
               />
-              <h2
-                className={`font-semibold tracking-wide text-zinc-100 ${
-                  size === "compact" ? "text-sm" : "text-sm"
-                }`}
-              >
+              <h2 className="text-sm font-semibold tracking-wide text-zinc-100">
                 Activity scan
               </h2>
             </div>
             <p className="mt-0.5 text-[11px] text-zinc-500">
               {series.totalEvents === 0
-                ? "No events in current filter — empty scan is healthy"
-                : `${series.totalEvents} event${series.totalEvents === 1 ? "" : "s"} · ${series.dayRangeLabel}`}
+                ? "Empty scan is healthy"
+                : `${series.totalEvents} event${series.totalEvents === 1 ? "" : "s"}${isSidebar ? "" : ` · ${series.dayRangeLabel}`}`}
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-1.5">
-            {SCAN_TYPES.map((t) => {
-              const n = series.byType[t];
-              if (n === 0 && series.totalEvents > 0) return null;
-              const c = EVENT_COLORS[t];
-              return (
-                <span
-                  key={t}
-                  className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-wide ${c.bg} ${c.text} ${c.border}`}
-                >
-                  <span
-                    className="h-1.5 w-1.5 rounded-full"
-                    style={{ background: EVENT_HEX[t] }}
-                  />
-                  {c.label}
-                  {series.totalEvents > 0 ? (
-                    <span className="opacity-70">{n}</span>
-                  ) : null}
-                </span>
-              );
-            })}
+          <div
+            className={`flex flex-wrap items-center gap-1.5 ${
+              isSidebar ? "" : ""
+            }`}
+          >
+            {!isSidebar
+              ? SCAN_TYPES.map((t) => {
+                  const n = series.byType[t];
+                  if (n === 0 && series.totalEvents > 0) return null;
+                  const c = EVENT_COLORS[t];
+                  return (
+                    <span
+                      key={t}
+                      className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-wide ${c.bg} ${c.text} ${c.border}`}
+                    >
+                      <span
+                        className="h-1.5 w-1.5 rounded-full"
+                        style={{ background: EVENT_HEX[t] }}
+                      />
+                      {c.label}
+                      {series.totalEvents > 0 ? (
+                        <span className="opacity-70">{n}</span>
+                      ) : null}
+                    </span>
+                  );
+                })
+              : null}
             {onExpand ? (
               <button
                 type="button"
@@ -127,7 +157,7 @@ export function ActivityScan({
                 href={scanHref}
                 className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 text-[11px] text-emerald-300 hover:border-emerald-400/50"
               >
-                Open /scan
+                {isSidebar ? "/scan" : "Open /scan"}
               </Link>
             ) : null}
           </div>
@@ -217,7 +247,7 @@ export function ActivityScan({
             />
 
             {series.days.map((bucket, i) => {
-              const x = chartPad.left + i * (barW + barGap);
+              const x = chartPad.left + barOffsetX + i * (barW + barGap);
               let yCursor = chartPad.top + innerH;
               const scale =
                 series.maxDayTotal > 0 ? innerH / series.maxDayTotal : 0;
@@ -379,8 +409,10 @@ export function ActivityScan({
         </div>
       )}
 
-      {/* Hour-of-day heatmap (UTC) — useful as volume grows; fine when sparse */}
-      {series.maxHourTotal > 0 && size !== "compact" ? (
+      {/* Hour-of-day heatmap (UTC) — full sizes only */}
+      {series.maxHourTotal > 0 &&
+      size !== "compact" &&
+      size !== "sidebar" ? (
         <div className="mt-4 space-y-2 border-t border-zinc-800/80 pt-3">
           <div className="flex items-baseline justify-between gap-2">
             <div className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
@@ -439,8 +471,10 @@ export function ActivityScan({
         </div>
       ) : null}
 
-      {/* Workspace signal lanes */}
-      {series.workspaceSignals.length > 0 && size !== "compact" ? (
+      {/* Workspace signal lanes — full sizes only */}
+      {series.workspaceSignals.length > 0 &&
+      size !== "compact" &&
+      size !== "sidebar" ? (
         <div className="mt-4 space-y-2 border-t border-zinc-800/80 pt-3">
           <div className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
             Workspace signal

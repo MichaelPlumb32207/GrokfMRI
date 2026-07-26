@@ -39,19 +39,17 @@ npm start
 
 ## Using the UI
 
-1. **Timeline** — default view; day-grouped events  
-2. **Activity scan** — stacked bars by day × type + **hour-of-day heatmap (UTC)** + workspace signal lanes + scan-line  
-   - Compact strip under system health on the home page  
-   - **Scan** tab for a larger embed  
-   - **Expand** — modal overlay; **Full screen** — browser fullscreen when allowed  
-   - **Open /scan** or header link — dedicated full page  
-3. **Type chips** — toggle flush / session-end / remember / dream / unknown (timeline *and* scan)  
-4. **Workspace filter** — All, Global, or a project slug  
-5. **Workspaces tab** — cards with counts; click to filter timeline  
-6. **Event click** — detail drawer: path, topics, decisions, raw markdown  
-7. **MEMORY panel** — read-only view of global or workspace curated files  
-8. **Refresh** — re-scan the filesystem  
-9. **Host safety** — amber banner if the page is not on localhost  
+1. **Health bar** — workspace counts, last flush, pending logs  
+2. **Filters** — Timeline / Workspaces · workspace dropdown · type chips  
+3. **Main row (desktop)**  
+   - **Left:** clickable event list (timeline) or workspace cards  
+   - **Right:** small **activity scan** (sidebar) — Expand / Full screen / `/scan` to blow it up  
+4. **Detail (full width below)** — click an event; topics, decisions, paths, raw file span the page under the list+scan  
+5. **MEMORY panel** — read-only curated files  
+6. **Refresh** — re-scan the filesystem  
+7. **Host safety** — amber banner if not on localhost  
+
+Sparse charts use capped bar widths so one day does not become a full-width green slab.
 
 ## Generating data in Grok
 

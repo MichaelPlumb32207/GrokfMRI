@@ -22,8 +22,10 @@ As Michael, I open the local dashboard and see a timeline of memory events acros
 
 1. Ensure `~/.grok/memory/fetch-16b6e57e/sessions/2026-07-26.md` exists with a flush block  
 2. `npm run dev` → http://127.0.0.1:3000  
-3. Timeline shows at least one **flush** for Fetch  
-4. Timestamp and title/excerpt are non-empty  
+3. Timeline (left) shows at least one **flush** for Fetch  
+4. Compact activity scan sits on the **right** (desktop)  
+5. Click event → detail opens **full width below** list+scan  
+6. Timestamp and title/excerpt are non-empty  
 
 ### UC-001·E1 Empty store
 
