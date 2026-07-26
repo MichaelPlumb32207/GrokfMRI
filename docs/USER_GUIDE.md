@@ -7,7 +7,7 @@ A **local-only** dashboard that reads Grok’s experimental memory store and sho
 ## Prerequisites
 
 - Node 20+ recommended
-- Grok memory enabled (`~/.grok/config.toml` → `[memory] enabled = true`) optional for empty-state testing; needed for real events
+- Grok memory enabled (`~/.grok/config.toml` → `[memory] enabled = true`) optional for empty-state testing; needed for **your** events
 - Memory root: `~/.grok/memory/` (override with `GROK_HOME`)
 
 ## Run
@@ -20,6 +20,16 @@ npm run dev
 
 Open **http://127.0.0.1:3000** (bound to localhost only).
 
+### Demo multi-day dataset
+
+If your real store only has a day of history, use the **synthetic** demo tree for tours and screenshots (UI shows a violet **Demo dataset** banner):
+
+```bash
+npm run demo
+```
+
+This sets `GROK_HOME=./fixtures/demo-grok`. It is **not** claimed as live production memory.
+
 Production-ish local:
 
 ```bash
@@ -30,7 +40,7 @@ npm start
 ## Using the UI
 
 1. **Timeline** — default view; day-grouped events  
-2. **Activity scan** — stacked bars by day × type (same colors as type chips) + workspace signal lanes  
+2. **Activity scan** — stacked bars by day × type + **hour-of-day heatmap (UTC)** + workspace signal lanes + scan-line  
    - Compact strip under system health on the home page  
    - **Scan** tab for a larger embed  
    - **Expand** — modal overlay; **Full screen** — browser fullscreen when allowed  
@@ -41,6 +51,7 @@ npm start
 6. **Event click** — detail drawer: path, topics, decisions, raw markdown  
 7. **MEMORY panel** — read-only view of global or workspace curated files  
 8. **Refresh** — re-scan the filesystem  
+9. **Host safety** — amber banner if the page is not on localhost  
 
 ## Generating data in Grok
 
@@ -52,6 +63,18 @@ Inside a project:
 
 Then hit **Refresh** in GrokfMRI.
 
+## Support GrokfMRI
+
+Optional tips keep tools like this going:
+
+| Method | Handle |
+|--------|--------|
+| **Bitcoin** | `bc1qvh99yk40uhw9atsxlfgu6z6zveur7c23n4m2xj` |
+| **Lightning** | `four_plums@strike.me` |
+| **Cash App** | `$mep32207` → https://cash.app/$mep32207 |
+
+Also linked in the app footer.
+
 ## Privacy
 
 - Content stays on your machine
@@ -61,13 +84,13 @@ Then hit **Refresh** in GrokfMRI.
 
 ## Security notes
 
-See root [SECURITY.md](../SECURITY.md). Scripts bind `127.0.0.1` by default.
+See root [SECURITY.md](../SECURITY.md). Scripts bind `127.0.0.1` by default. A non-localhost host shows a warning banner.
 
 ## Troubleshooting
 
 | Symptom | Check |
 |---------|--------|
 | No workspaces | Has Grok created `~/.grok/memory/<slug>-<hash>/`? Run Grok **inside** a git project |
-| No flush events | Open `/memory` in Grok; confirm `sessions/*.md` exists |
+| No flush events | Open `/memory` in Grok; confirm `sessions/*.md` exists · or try `npm run demo` |
 | Wrong root | Set `GROK_HOME` before `npm run dev` |
 | Port in use | `next dev -p 3001 --hostname 127.0.0.1` |

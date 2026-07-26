@@ -15,4 +15,6 @@ Living documents for **GrokfMRI** (Memory Observatory). Keep all eight current o
 
 Root `/README.md` is the public/quickstart entry; this folder is the source of truth for product work.
 
-**UI routes:** `/` observatory · `/scan` full activity scan.
+**UI routes:** `/` observatory · `/scan` full activity scan · `/share.html` one-pager.
+
+Also see root [CONTRIBUTING.md](../CONTRIBUTING.md) and [SECURITY.md](../SECURITY.md).

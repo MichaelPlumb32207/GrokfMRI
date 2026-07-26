@@ -62,6 +62,25 @@ No matching events → quiet empty state, not a crash.
 
 Activity scan shows a sweeping emerald scan line; with `prefers-reduced-motion: reduce` the line is static.
 
+### UC-006·E4 Hour heatmap
+
+With dated timed events, Scan tab / full scan shows a 24-cell UTC hour heatmap.
+
+### UC-006·E5 Demo dataset
+
+`npm run demo` loads multi-day synthetic events and shows the **Demo dataset** banner.
+
+---
+
+## UC-007 · Support / tips
+
+**Outcome leg:** (community)  
+As a user who values the tool, I can find BTC / Lightning / Cash App handles in README, USER_GUIDE, and app footer.
+
+### UC-007·H Happy path
+
+Open README → Support GrokfMRI table lists all three handles with links where applicable.
+
 ---
 
 ## UC-002 · Filter by project

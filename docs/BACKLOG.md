@@ -22,3 +22,7 @@ Placement: `spine` | `rib` + outcome leg name
 | FEAT-000 | P0 | spine · Legs 1–4 | done | v1 observatory: parse + API + dashboard |
 | FEAT-004 | P1 | rib · Leg 1 | done | Activity scan chart (embed + /scan + expand/fullscreen) |
 | ENH-005 | P1 | rib · Leg 1 | done | Scan-line animation + public-readiness (LICENSE, SECURITY, share.html, path hygiene) |
+| ENH-006 | P1 | rib · Leg 1 | done | Hour-of-day heatmap (UTC) on activity scan |
+| ENH-007 | P2 | rib · Leg 4 | done | Non-localhost host safety banner |
+| ENH-008 | P2 | rib · Leg 1 | done | Synthetic multi-day demo store (`npm run demo`) + demo banner |
+| ENH-009 | P2 | — | done | Support/donate links (README, USER_GUIDE, footer); CONTRIBUTING.md |

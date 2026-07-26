@@ -211,6 +211,8 @@ export function ingestMemoryStore(
   const events: MemoryEvent[] = [];
   const workspaces: WorkspaceInfo[] = [];
 
+  const isDemoDataset = detectDemoDataset(memoryRoot);
+
   if (!fileExists(memoryRoot)) {
     const health: SystemHealth = {
       memoryRoot,
@@ -222,6 +224,7 @@ export function ingestMemoryStore(
       noisyWorkspaces: 0,
       globalIsTemplateOnly: true,
       dreamGates: { minHours: 4, minSessions: 3 },
+      isDemoDataset,
     };
     return {
       generatedAt: new Date().toISOString(),
@@ -230,6 +233,7 @@ export function ingestMemoryStore(
       workspaces: [],
       events: [],
       health,
+      isDemoDataset,
     };
   }
 
@@ -285,6 +289,7 @@ export function ingestMemoryStore(
     noisyWorkspaces: workspaces.filter((w) => w.isNoisy).length,
     globalIsTemplateOnly: global?.isTemplateOnly ?? true,
     dreamGates: { minHours: 4, minSessions: 3 },
+    isDemoDataset,
   };
 
   return {
@@ -294,7 +299,17 @@ export function ingestMemoryStore(
     workspaces,
     events,
     health,
+    isDemoDataset,
   };
+}
+
+/** Demo tree ships under fixtures/demo-grok/memory (npm run demo). */
+function detectDemoDataset(memoryRoot: string): boolean {
+  const normalized = memoryRoot.replace(/\\/g, "/");
+  return (
+    normalized.includes("/fixtures/demo-grok/memory") ||
+    normalized.endsWith("fixtures/demo-grok/memory")
+  );
 }
 
 /** Discover workspace directory names only (light). */

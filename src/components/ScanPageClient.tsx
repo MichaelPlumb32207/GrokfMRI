@@ -4,6 +4,9 @@ import { useCallback, useState } from "react";
 import Link from "next/link";
 import { useMemorySnapshot } from "@/hooks/useMemorySnapshot";
 import { ActivityScan, ActivityScanOverlay } from "./ActivityScan";
+import { HostSafetyBanner } from "./HostSafetyBanner";
+import { DemoBanner } from "./DemoBanner";
+import { SupportFooter } from "./SupportFooter";
 import { EVENT_COLORS } from "@/lib/format";
 
 export function ScanPageClient() {
@@ -37,6 +40,8 @@ export function ScanPageClient() {
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-950 text-zinc-100">
+      <HostSafetyBanner />
+      <DemoBanner active={Boolean(snap?.isDemoDataset)} />
       <header className="border-b border-zinc-800 px-4 py-4 sm:px-6">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3">
           <div>
@@ -128,6 +133,10 @@ export function ScanPageClient() {
           />
         )}
       </main>
+
+      <footer className="border-t border-zinc-900">
+        <SupportFooter />
+      </footer>
 
       <ActivityScanOverlay
         events={filteredEvents}

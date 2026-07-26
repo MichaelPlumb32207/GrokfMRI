@@ -79,6 +79,8 @@ describe("ingestMemoryStore", () => {
     expect(snap.workspaces[0].projectPath).toBe("/home/demo/projects/fetch");
     expect(snap.global?.isTemplateOnly).toBe(true);
     expect(snap.events.filter((e) => e.type === "flush")).toHaveLength(0);
+    expect(snap.isDemoDataset).toBe(false);
+    expect(snap.health.isDemoDataset).toBe(false);
   });
 
   it("ingests flush from sessions daily log", () => {

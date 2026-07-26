@@ -1,5 +1,11 @@
 # PROGRESS
 
+## 2026-07-26 — Support, optionals, honest demo data
+
+- Support / donate handles in README, USER_GUIDE, app footer, share.html (BTC / Lightning / Cash App)
+- CONTRIBUTING.md; non-localhost host safety banner; hour-of-day UTC heatmap on activity scan
+- `npm run demo` + `fixtures/demo-grok` multi-day synthetic store with UI **Demo dataset** banner (screenshot-friendly without faking live history)
+
 ## 2026-07-26 — Public-readiness + scan-line polish
 
 - Scan-line animation on activity chart (respects `prefers-reduced-motion`)

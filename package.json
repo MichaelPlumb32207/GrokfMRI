@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --hostname 127.0.0.1",
+    "demo": "GROK_HOME=./fixtures/demo-grok next dev --hostname 127.0.0.1",
     "build": "next build",
     "start": "next start --hostname 127.0.0.1",
     "lint": "eslint",

@@ -32,7 +32,8 @@
 - Flush detection via `<!-- flush <id> -->` + rich headings
 - Session-end vs flush heuristics
 - Empty-store empty states
-- **Activity scan** — stacked day×type bars + workspace signal lanes + scan-line animation; compact on home, Scan tab, expand/fullscreen, `/scan`
+- **Activity scan** — stacked day×type bars + hour-of-day heatmap + workspace signal lanes + scan-line; compact on home, Scan tab, expand/fullscreen, `/scan`
+- **Demo dataset** — `npm run demo` for multi-day synthetic store (screenshot tours)
 
 **Status:** v1 shipped · scan viz shipped · **testable now**
 

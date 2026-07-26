@@ -31,6 +31,8 @@ describe("buildScanSeries", () => {
   it("returns empty series for no events", () => {
     const s = buildScanSeries([]);
     expect(s.days).toEqual([]);
+    expect(s.hours).toHaveLength(24);
+    expect(s.hours.every((h) => h.counts.total === 0)).toBe(true);
     expect(s.totalEvents).toBe(0);
     expect(s.maxDayTotal).toBe(0);
     expect(s.workspaceSignals).toEqual([]);
@@ -75,5 +77,9 @@ describe("buildScanSeries", () => {
     expect(s.workspaceSignals[0].total).toBeGreaterThanOrEqual(
       s.workspaceSignals[1].total,
     );
+    // 10:00 UTC twice, 12:00 once
+    expect(s.hours[10].counts.total).toBe(2);
+    expect(s.hours[12].counts.total).toBe(1);
+    expect(s.maxHourTotal).toBe(2);
   });
 });

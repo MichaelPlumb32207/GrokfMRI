@@ -34,9 +34,17 @@ export interface WorkspaceSignal {
   intensity: number;
 }
 
+export interface HourBucket {
+  /** 0–23 UTC */
+  hour: number;
+  counts: DayCounts;
+}
+
 export interface ScanSeries {
   days: ScanDayBucket[];
+  hours: HourBucket[];
   maxDayTotal: number;
+  maxHourTotal: number;
   totalEvents: number;
   byType: Record<MemoryEventType, number>;
   workspaceSignals: WorkspaceSignal[];
@@ -78,8 +86,18 @@ function eachDayInclusive(start: string, end: string): string[] {
  * Aggregate filtered events into day stacks + workspace signal lanes.
  * Fills calendar gaps between first and last dated event (cap 90 days).
  */
+export function hourFromTimestamp(iso: string | null): number | null {
+  if (!iso) return null;
+  const m = iso.match(/T(\d{2}):/);
+  if (!m) return null;
+  const h = parseInt(m[1], 10);
+  if (Number.isNaN(h) || h < 0 || h > 23) return null;
+  return h;
+}
+
 export function buildScanSeries(events: MemoryEvent[]): ScanSeries {
   const byDay = new Map<string, DayCounts>();
+  const byHour = new Map<number, DayCounts>();
   const byType = emptyCounts();
   const byWorkspace = new Map<
     string,
@@ -92,6 +110,14 @@ export function buildScanSeries(events: MemoryEvent[]): ScanSeries {
     dayBucket[ev.type] += 1;
     dayBucket.total += 1;
     byDay.set(day, dayBucket);
+
+    const hour = hourFromTimestamp(ev.timestamp);
+    if (hour != null) {
+      const hourBucket = byHour.get(hour) ?? emptyCounts();
+      hourBucket[ev.type] += 1;
+      hourBucket.total += 1;
+      byHour.set(hour, hourBucket);
+    }
 
     byType[ev.type] += 1;
     byType.total += 1;
@@ -130,6 +156,12 @@ export function buildScanSeries(events: MemoryEvent[]): ScanSeries {
 
   const maxDayTotal = days.reduce((m, d) => Math.max(m, d.counts.total), 0);
 
+  const hours: HourBucket[] = Array.from({ length: 24 }, (_, hour) => ({
+    hour,
+    counts: byHour.get(hour) ?? emptyCounts(),
+  }));
+  const maxHourTotal = hours.reduce((m, h) => Math.max(m, h.counts.total), 0);
+
   const maxWs = Math.max(
     0,
     ...[...byWorkspace.values()].map((w) => w.byType.total),
@@ -161,7 +193,9 @@ export function buildScanSeries(events: MemoryEvent[]): ScanSeries {
 
   return {
     days,
+    hours,
     maxDayTotal,
+    maxHourTotal,
     totalEvents: byType.total,
     byType: {
       flush: byType.flush,

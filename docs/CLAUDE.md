@@ -55,12 +55,17 @@ On every code/feature/defect change: update **all eight** living docs (or note â
 ## Commands
 
 ```bash
-npm run dev          # http://127.0.0.1:3000
+npm run dev          # real memory Â· http://127.0.0.1:3000
+npm run demo         # synthetic multi-day fixtures/demo-grok
 npm run typecheck
 npm run lint
 npm test
 npm run build        # required before push to main
 ```
+
+## Support handles (public)
+
+Documented in README / USER_GUIDE / footer: BTC `bc1qvh99yk40uhw9atsxlfgu6z6zveur7c23n4m2xj`, Lightning `four_plums@strike.me`, Cash App `$mep32207`.
 
 ## Deploy
 

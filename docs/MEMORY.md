@@ -35,5 +35,7 @@ This app only visualizes the third layer.
 - Reuses event type palette (emerald flush, sky session-end, violet remember, amber dream)
 - Surfaces: compact home strip, Scan tab, expand overlay, browser fullscreen, `/scan` page
 - Aggregation is pure (`buildScanSeries`); chart is filter-aware
-- Scan-line animation preferred over hour heatmap while event volume is sparse
+- Scan-line animation for sparse charts; hour-of-day heatmap also available when times exist
 - Public readiness: MIT license, SECURITY.md, share one-pager; fixtures use demo paths
+- Honest screenshots: `npm run demo` + violet Demo dataset banner (not faked “live” memory)
+- Support handles: BTC / Lightning / Cash App (same tip jar family as Smooth)

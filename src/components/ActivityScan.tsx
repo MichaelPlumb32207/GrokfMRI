@@ -379,6 +379,66 @@ export function ActivityScan({
         </div>
       )}
 
+      {/* Hour-of-day heatmap (UTC) — useful as volume grows; fine when sparse */}
+      {series.maxHourTotal > 0 && size !== "compact" ? (
+        <div className="mt-4 space-y-2 border-t border-zinc-800/80 pt-3">
+          <div className="flex items-baseline justify-between gap-2">
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+              Hour of day (UTC)
+            </div>
+            <div className="text-[10px] text-zinc-600">
+              darker = more events
+            </div>
+          </div>
+          <div
+            className="grid gap-0.5 sm:gap-1"
+            style={{ gridTemplateColumns: "repeat(24, minmax(0, 1fr))" }}
+          >
+            {series.hours.map((h) => {
+              const intensity =
+                series.maxHourTotal > 0
+                  ? h.counts.total / series.maxHourTotal
+                  : 0;
+              let dominant: MemoryEventType = "unknown";
+              let dominantN = 0;
+              for (const t of SCAN_TYPES) {
+                if (h.counts[t] > dominantN) {
+                  dominantN = h.counts[t];
+                  dominant = t;
+                }
+              }
+              const bg =
+                h.counts.total === 0 ? "transparent" : EVENT_HEX[dominant];
+              return (
+                <div
+                  key={h.hour}
+                  className="group relative"
+                  title={`${String(h.hour).padStart(2, "0")}:00 UTC · ${h.counts.total} event${h.counts.total === 1 ? "" : "s"}`}
+                >
+                  <div
+                    className="aspect-square rounded-[2px] ring-1 ring-zinc-800/80 sm:rounded-sm"
+                    style={{
+                      background: bg,
+                      opacity:
+                        h.counts.total === 0
+                          ? 0.15
+                          : 0.25 + intensity * 0.75,
+                    }}
+                  />
+                  {h.hour % 6 === 0 ? (
+                    <div className="mt-0.5 text-center font-mono text-[8px] text-zinc-600 sm:text-[9px]">
+                      {String(h.hour).padStart(2, "0")}
+                    </div>
+                  ) : (
+                    <div className="mt-0.5 h-[12px] sm:h-[13px]" />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
+
       {/* Workspace signal lanes */}
       {series.workspaceSignals.length > 0 && size !== "compact" ? (
         <div className="mt-4 space-y-2 border-t border-zinc-800/80 pt-3">

@@ -85,6 +85,8 @@ export interface SystemHealth {
     minHours: number;
     minSessions: number;
   };
+  /** True when reading the repo fixtures/demo-grok tree (npm run demo). */
+  isDemoDataset: boolean;
 }
 
 export interface ObservatorySnapshot {
@@ -94,4 +96,6 @@ export interface ObservatorySnapshot {
   workspaces: WorkspaceInfo[];
   events: MemoryEvent[];
   health: SystemHealth;
+  /** Same as health.isDemoDataset — convenient for UI banners. */
+  isDemoDataset: boolean;
 }

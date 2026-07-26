@@ -10,6 +10,9 @@ import { Timeline } from "./Timeline";
 import { EventDetail } from "./EventDetail";
 import { MemoryPanel } from "./MemoryPanel";
 import { ActivityScan, ActivityScanOverlay } from "./ActivityScan";
+import { HostSafetyBanner } from "./HostSafetyBanner";
+import { DemoBanner } from "./DemoBanner";
+import { SupportFooter } from "./SupportFooter";
 import { EVENT_COLORS } from "@/lib/format";
 
 export function Dashboard() {
@@ -48,6 +51,8 @@ export function Dashboard() {
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-950 text-zinc-100">
+      <HostSafetyBanner />
+      <DemoBanner active={Boolean(snap?.isDemoDataset)} />
       <header className="border-b border-zinc-800 bg-zinc-950/90 px-4 py-4 backdrop-blur sm:px-6">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3">
           <div>
@@ -238,10 +243,8 @@ export function Dashboard() {
         </div>
       </main>
 
-      <footer className="border-t border-zinc-900 px-4 py-3 text-center text-[11px] text-zinc-600">
-        Read-only observer of{" "}
-        <code className="text-zinc-500">~/.grok/memory</code> · never writes ·
-        bind 127.0.0.1 · no cloud required
+      <footer className="border-t border-zinc-900">
+        <SupportFooter />
       </footer>
 
       <ActivityScanOverlay
