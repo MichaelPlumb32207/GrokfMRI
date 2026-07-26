@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import type {
   MemoryEvent,
   MemoryEventType,
@@ -11,6 +12,7 @@ import { WorkspaceGrid } from "./WorkspaceGrid";
 import { Timeline } from "./Timeline";
 import { EventDetail } from "./EventDetail";
 import { MemoryPanel } from "./MemoryPanel";
+import { ActivityScan, ActivityScanOverlay } from "./ActivityScan";
 import { EVENT_COLORS } from "@/lib/format";
 
 const ALL_TYPES: MemoryEventType[] = [
@@ -30,7 +32,10 @@ export function Dashboard() {
     () => new Set(ALL_TYPES),
   );
   const [selectedEvent, setSelectedEvent] = useState<MemoryEvent | null>(null);
-  const [tab, setTab] = useState<"timeline" | "workspaces">("timeline");
+  const [tab, setTab] = useState<"timeline" | "workspaces" | "scan">(
+    "timeline",
+  );
+  const [scanExpanded, setScanExpanded] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -71,6 +76,26 @@ export function Dashboard() {
     });
   };
 
+  const requestBrowserFullscreen = useCallback(() => {
+    setScanExpanded(true);
+    // Defer until overlay mounts, then try Fullscreen API on documentElement
+    requestAnimationFrame(() => {
+      const el = document.documentElement;
+      if (el.requestFullscreen) {
+        void el.requestFullscreen().catch(() => {
+          /* overlay still works without browser FS */
+        });
+      }
+    });
+  }, []);
+
+  const closeExpanded = useCallback(() => {
+    setScanExpanded(false);
+    if (document.fullscreenElement) {
+      void document.exitFullscreen().catch(() => {});
+    }
+  }, []);
+
   return (
     <div className="flex min-h-screen flex-col bg-zinc-950 text-zinc-100">
       <header className="border-b border-zinc-800 bg-zinc-950/90 px-4 py-4 backdrop-blur sm:px-6">
@@ -92,6 +117,12 @@ export function Dashboard() {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            <Link
+              href="/scan"
+              className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-300 hover:border-emerald-400/50"
+            >
+              Activity scan
+            </Link>
             <button
               type="button"
               onClick={() => void load()}
@@ -118,12 +149,24 @@ export function Dashboard() {
 
         {snap ? <HealthBar health={snap.health} /> : null}
 
+        {/* Compact scan always visible under health */}
+        {snap ? (
+          <ActivityScan
+            events={filteredEvents}
+            size="compact"
+            onExpand={() => setScanExpanded(true)}
+            onRequestFullscreen={requestBrowserFullscreen}
+            fullPageHref="/scan"
+          />
+        ) : null}
+
         <section className="flex flex-wrap items-center gap-3 rounded-xl border border-zinc-800 bg-zinc-900/40 p-3">
           <div className="flex items-center gap-1 rounded-lg bg-zinc-950 p-0.5">
             {(
               [
                 ["timeline", "Timeline"],
                 ["workspaces", "Workspaces"],
+                ["scan", "Scan"],
               ] as const
             ).map(([id, label]) => (
               <button
@@ -202,7 +245,7 @@ export function Dashboard() {
                 selectedId={selectedEvent?.id ?? null}
                 onSelect={setSelectedEvent}
               />
-            ) : (
+            ) : tab === "workspaces" ? (
               <WorkspaceGrid
                 workspaces={snap?.workspaces ?? []}
                 selectedId={workspaceFilter}
@@ -210,6 +253,14 @@ export function Dashboard() {
                   setWorkspaceFilter(id);
                   if (id) setTab("timeline");
                 }}
+              />
+            ) : (
+              <ActivityScan
+                events={filteredEvents}
+                size="default"
+                onExpand={() => setScanExpanded(true)}
+                onRequestFullscreen={requestBrowserFullscreen}
+                fullPageHref="/scan"
               />
             )}
 
@@ -243,6 +294,12 @@ export function Dashboard() {
         <code className="text-zinc-500">~/.grok/memory</code> · never writes ·
         bind 127.0.0.1 · no cloud required
       </footer>
+
+      <ActivityScanOverlay
+        events={filteredEvents}
+        open={scanExpanded}
+        onClose={closeExpanded}
+      />
     </div>
   );
 }

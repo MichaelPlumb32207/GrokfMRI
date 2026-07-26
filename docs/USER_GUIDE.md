@@ -30,12 +30,17 @@ npm start
 ## Using the UI
 
 1. **Timeline** — default view; day-grouped events  
-2. **Type chips** — toggle flush / session-end / remember / dream / unknown  
-3. **Workspace filter** — All, Global, or a project slug  
-4. **Workspaces tab** — cards with counts; click to filter timeline  
-5. **Event click** — detail drawer: path, topics, decisions, raw markdown  
-6. **MEMORY panel** — read-only view of global or workspace curated files  
-7. **Refresh** — re-scan the filesystem  
+2. **Activity scan** — stacked bars by day × type (same colors as type chips) + workspace signal lanes  
+   - Compact strip under system health on the home page  
+   - **Scan** tab for a larger embed  
+   - **Expand** — modal overlay; **Full screen** — browser fullscreen when allowed  
+   - **Open /scan** or header link — dedicated full page  
+3. **Type chips** — toggle flush / session-end / remember / dream / unknown (timeline *and* scan)  
+4. **Workspace filter** — All, Global, or a project slug  
+5. **Workspaces tab** — cards with counts; click to filter timeline  
+6. **Event click** — detail drawer: path, topics, decisions, raw markdown  
+7. **MEMORY panel** — read-only view of global or workspace curated files  
+8. **Refresh** — re-scan the filesystem  
 
 ## Generating data in Grok
 

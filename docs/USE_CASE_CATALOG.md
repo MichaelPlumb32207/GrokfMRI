@@ -4,7 +4,7 @@
 
 | Suite | Command | Covers |
 |-------|---------|--------|
-| Parse + ingest unit tests | `npm test` | Session split/classify, sections, remember, dream heuristic, empty store, path safety, flush fixture |
+| Parse + ingest + scan aggregate unit tests | `npm test` | Session split/classify, sections, remember, dream heuristic, empty store, path safety, flush fixture, day stacks / gap fill |
 | Typecheck | `npm run typecheck` | TS contracts |
 | Lint | `npm run lint` | ESLint |
 | Production build | `npm run build` | Next bundling |
@@ -32,6 +32,31 @@ Given only template MEMORY files and no sessions, the timeline shows an empty st
 ### UC-001·E2 Unknown markdown shapes
 
 Odd/manual session markdown still loads; may classify as `unknown` or `session_end` without throwing.
+
+---
+
+## UC-006 · Activity scan visualization
+
+**Outcome leg:** I can see memory activity over time (rib)  
+**Arch-significant:** no
+
+As Michael, I see a stacked-bar “activity scan” of events by day and type, with workspace signal lanes, matching the observatory palette.
+
+### UC-006·H Happy path
+
+1. Open http://127.0.0.1:3000 with ≥1 dated event  
+2. Compact **Activity scan** appears under health  
+3. Hover a bar → tooltip with per-type counts  
+4. **Expand** opens overlay; **Open /scan** goes to full page  
+5. Type/workspace filters re-aggregate the chart  
+
+### UC-006·E1 Empty filter
+
+No matching events → quiet empty state, not a crash.
+
+### UC-006·E2 Full screen
+
+**Full screen** requests browser fullscreen when permitted; Esc closes overlay and exits fullscreen.
 
 ---
 

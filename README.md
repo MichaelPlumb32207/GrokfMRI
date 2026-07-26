@@ -14,6 +14,8 @@ npm run dev
 
 Data source: `~/.grok/memory/` (or `$GROK_HOME/memory/`).
 
+**Activity scan:** stacked day×type chart on the home page, **Scan** tab, expand/fullscreen, and dedicated route `/scan`.
+
 ## Scripts
 
 | Command | Purpose |

@@ -32,8 +32,9 @@
 - Flush detection via `<!-- flush <id> -->` + rich headings
 - Session-end vs flush heuristics
 - Empty-store empty states
+- **Activity scan** — stacked day×type bars + workspace signal lanes; compact on home, Scan tab, expand/fullscreen, `/scan`
 
-**Status:** v1 shipped · **testable now**
+**Status:** v1 shipped · scan viz shipped · **testable now**
 
 ---
 

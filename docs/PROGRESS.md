@@ -1,5 +1,15 @@
 # PROGRESS
 
+## 2026-07-26 — Activity scan visualization
+
+Shipped:
+
+- **Activity scan** data viz: stacked daily bars by event type + workspace signal lanes
+- Palette-matched (emerald / sky / violet / amber / zinc on dark zinc-950)
+- Embedded compact strip on home under health; **Scan** tab; expand overlay; browser full screen; dedicated `/scan` page
+- Pure aggregation `src/lib/scan-aggregate.ts` + unit tests
+- Respects existing workspace + type filters
+
 ## 2026-07-26 — v1 MVP scaffold
 
 Shipped:

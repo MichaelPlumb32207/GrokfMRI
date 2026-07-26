@@ -28,3 +28,10 @@ This app only visualizes the third layer.
 - Living docs stay git-tracked product continuity; dream does not replace them
 - Core value is local; cloud is optional later
 - Path-safe file reads only under memory root
+
+## Visualization (2026-07-26)
+
+- Primary data viz is **Activity scan**: stacked day×type bars + workspace intensity lanes
+- Reuses event type palette (emerald flush, sky session-end, violet remember, amber dream)
+- Surfaces: compact home strip, Scan tab, expand overlay, browser fullscreen, `/scan` page
+- Aggregation is pure (`buildScanSeries`); chart is filter-aware

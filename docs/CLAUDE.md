@@ -32,7 +32,7 @@ Root: `~/.grok/memory/` or `$GROK_HOME/memory/`
 | `<slug>-<hash8>/sessions/*.md` | Flush + session-end logs |
 | `index.sqlite` | Optional; not required for v1 UI |
 
-Parsers live in `src/lib/memory/`. API: `/api/snapshot`, `/api/events`, `/api/workspaces`, `/api/files`.
+Parsers live in `src/lib/memory/`. Scan aggregation: `src/lib/scan-aggregate.ts`. API: `/api/snapshot`, `/api/events`, `/api/workspaces`, `/api/files`. Routes: `/` dashboard, `/scan` full activity scan.
 
 ## Privacy
 
