@@ -35,3 +35,5 @@ This app only visualizes the third layer.
 - Reuses event type palette (emerald flush, sky session-end, violet remember, amber dream)
 - Surfaces: compact home strip, Scan tab, expand overlay, browser fullscreen, `/scan` page
 - Aggregation is pure (`buildScanSeries`); chart is filter-aware
+- Scan-line animation preferred over hour heatmap while event volume is sparse
+- Public readiness: MIT license, SECURITY.md, share one-pager; fixtures use demo paths

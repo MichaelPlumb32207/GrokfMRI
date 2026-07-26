@@ -36,7 +36,7 @@ Parsers live in `src/lib/memory/`. Scan aggregation: `src/lib/scan-aggregate.ts`
 
 ## Privacy
 
-All content is personal/sensitive. No analytics. No outbound network for core features. Path API must stay under memory root (`safeResolveUnderRoot`).
+All content is personal/sensitive. No analytics. No outbound network for core features. Path API must stay under memory root (`safeResolveUnderRoot`). File API returns relative paths by default (`?absolute=1` opt-in). Do not commit real memory store contents; fixtures use `/home/demo/...` paths.
 
 ## AI vendor
 
@@ -68,5 +68,5 @@ npm run build        # required before push to main
 
 ## Git
 
-- Private under `MichaelPlumb32207`
-- Author: `Michael Plumb <meplumb@gmail.com>`
+- GitHub: `MichaelPlumb32207/GrokfMRI` (flip public when ready to share)
+- Configure your own `user.name` / `user.email` for commits

@@ -1,5 +1,12 @@
 # PROGRESS
 
+## 2026-07-26 — Public-readiness + scan-line polish
+
+- Scan-line animation on activity chart (respects `prefers-reduced-motion`)
+- Sanitized fixtures/docs (demo paths; no personal home paths in source)
+- `/api/files` omits absolute paths unless `?absolute=1`
+- Shared `useMemorySnapshot` hook; MIT LICENSE; SECURITY.md; public README; `public/share.html` one-pager
+
 ## 2026-07-26 — Activity scan visualization
 
 Shipped:

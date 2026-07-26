@@ -21,3 +21,36 @@ body {
 code {
   font-family: var(--font-geist-mono), ui-monospace, monospace;
 }
+
+/* Clinical instrument sweep — sparse charts still feel alive */
+@keyframes grokfmri-scan-sweep {
+  0% {
+    transform: translateX(-8%);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.85;
+  }
+  92% {
+    opacity: 0.55;
+  }
+  100% {
+    transform: translateX(108%);
+    opacity: 0;
+  }
+}
+
+.grokfmri-scan-line {
+  animation: grokfmri-scan-sweep 4.5s cubic-bezier(0.45, 0.05, 0.55, 0.95)
+    infinite;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grokfmri-scan-line {
+    animation: none;
+    opacity: 0.25;
+    left: 42%;
+    transform: none;
+  }
+}

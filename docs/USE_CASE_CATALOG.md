@@ -58,6 +58,10 @@ No matching events → quiet empty state, not a crash.
 
 **Full screen** requests browser fullscreen when permitted; Esc closes overlay and exits fullscreen.
 
+### UC-006·E3 Scan line
+
+Activity scan shows a sweeping emerald scan line; with `prefers-reduced-motion: reduce` the line is static.
+
 ---
 
 ## UC-002 · Filter by project

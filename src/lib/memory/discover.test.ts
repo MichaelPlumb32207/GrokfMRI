@@ -67,7 +67,7 @@ describe("ingestMemoryStore", () => {
     fs.mkdirSync(ws);
     fs.writeFileSync(
       path.join(ws, "MEMORY.md"),
-      `# Project Memory — /Users/michaelplumb/Fetch
+      `# Project Memory — /home/demo/projects/fetch
 
 > Auto-populated by dream consolidation. Edit freely.
 `,
@@ -76,7 +76,7 @@ describe("ingestMemoryStore", () => {
     const snap = ingestMemoryStore({ memoryRoot: root });
     expect(snap.workspaces).toHaveLength(1);
     expect(snap.workspaces[0].id).toBe("fetch-16b6e57e");
-    expect(snap.workspaces[0].projectPath).toBe("/Users/michaelplumb/Fetch");
+    expect(snap.workspaces[0].projectPath).toBe("/home/demo/projects/fetch");
     expect(snap.global?.isTemplateOnly).toBe(true);
     expect(snap.events.filter((e) => e.type === "flush")).toHaveLength(0);
   });
@@ -89,7 +89,7 @@ describe("ingestMemoryStore", () => {
     fs.mkdirSync(sessions, { recursive: true });
     fs.writeFileSync(
       path.join(ws, "MEMORY.md"),
-      "# Project Memory — /Users/michaelplumb/Fetch\n",
+      "# Project Memory — /home/demo/projects/fetch\n",
     );
     fs.writeFileSync(
       path.join(sessions, "2026-07-26.md"),

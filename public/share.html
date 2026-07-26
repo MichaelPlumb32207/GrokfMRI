@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GrokfMRI — Memory Observatory</title>
+    <style>
+      :root {
+        --bg: #09090b;
+        --panel: #18181b;
+        --border: #27272a;
+        --text: #f4f4f5;
+        --muted: #a1a1aa;
+        --dim: #71717a;
+        --emerald: #34d399;
+        --sky: #38bdf8;
+        --violet: #a78bfa;
+        --amber: #fbbf24;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+          Helvetica, Arial, sans-serif;
+        background: radial-gradient(
+            1200px 600px at 20% -10%,
+            rgba(52, 211, 153, 0.12),
+            transparent 55%
+          ),
+          radial-gradient(
+            900px 500px at 100% 20%,
+            rgba(167, 139, 250, 0.08),
+            transparent 50%
+          ),
+          var(--bg);
+        color: var(--text);
+        line-height: 1.5;
+      }
+      .wrap {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 48px 24px 64px;
+      }
+      .kicker {
+        font-size: 11px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(52, 211, 153, 0.85);
+        font-weight: 600;
+        margin: 0 0 10px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(2rem, 5vw, 2.75rem);
+        letter-spacing: -0.03em;
+        font-weight: 650;
+      }
+      .tagline {
+        margin: 0 0 28px;
+        color: var(--muted);
+        font-size: 1.125rem;
+        max-width: 36em;
+      }
+      .card {
+        background: rgba(24, 24, 27, 0.85);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 22px 22px 18px;
+        margin-bottom: 16px;
+        backdrop-filter: blur(8px);
+      }
+      .card h2 {
+        margin: 0 0 10px;
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--dim);
+        font-weight: 600;
+      }
+      .card p,
+      .card li {
+        color: var(--muted);
+        font-size: 0.98rem;
+      }
+      .card p {
+        margin: 0 0 10px;
+      }
+      .card p:last-child,
+      .card ul:last-child {
+        margin-bottom: 0;
+      }
+      ul {
+        margin: 0;
+        padding-left: 1.15rem;
+      }
+      li {
+        margin: 0.35rem 0;
+      }
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 4px;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border-radius: 999px;
+        border: 1px solid;
+        padding: 4px 10px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .chip i {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        display: inline-block;
+      }
+      .chip.flush {
+        color: #6ee7b7;
+        border-color: rgba(52, 211, 153, 0.35);
+        background: rgba(52, 211, 153, 0.1);
+      }
+      .chip.flush i {
+        background: var(--emerald);
+      }
+      .chip.end {
+        color: #7dd3fc;
+        border-color: rgba(56, 189, 248, 0.35);
+        background: rgba(56, 189, 248, 0.1);
+      }
+      .chip.end i {
+        background: var(--sky);
+      }
+      .chip.remember {
+        color: #c4b5fd;
+        border-color: rgba(167, 139, 250, 0.35);
+        background: rgba(167, 139, 250, 0.1);
+      }
+      .chip.remember i {
+        background: var(--violet);
+      }
+      .chip.dream {
+        color: #fcd34d;
+        border-color: rgba(251, 191, 36, 0.35);
+        background: rgba(251, 191, 36, 0.1);
+      }
+      .chip.dream i {
+        background: var(--amber);
+      }
+      a.cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 8px;
+        padding: 12px 16px;
+        border-radius: 12px;
+        background: rgba(52, 211, 153, 0.12);
+        border: 1px solid rgba(52, 211, 153, 0.35);
+        color: #6ee7b7;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+      a.cta:hover {
+        border-color: rgba(52, 211, 153, 0.6);
+        background: rgba(52, 211, 153, 0.18);
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          monospace;
+        font-size: 0.88em;
+        color: #d4d4d8;
+        background: #09090b;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 1px 6px;
+      }
+      .scan {
+        position: relative;
+        height: 72px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: #09090b;
+        overflow: hidden;
+        margin: 14px 0 4px;
+      }
+      .scan::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(
+            to right,
+            rgba(39, 39, 42, 0.9) 1px,
+            transparent 1px
+          ),
+          linear-gradient(to bottom, rgba(39, 39, 42, 0.9) 1px, transparent 1px);
+        background-size: 20px 20px;
+        opacity: 0.5;
+      }
+      .bars {
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        bottom: 14px;
+        top: 16px;
+        display: flex;
+        align-items: flex-end;
+        gap: 6px;
+      }
+      .bars span {
+        flex: 1;
+        border-radius: 2px 2px 0 0;
+        background: linear-gradient(
+          to top,
+          rgba(52, 211, 153, 0.2),
+          var(--emerald)
+        );
+        opacity: 0.85;
+      }
+      .bars span:nth-child(2) {
+        height: 35% !important;
+        background: linear-gradient(
+          to top,
+          rgba(56, 189, 248, 0.15),
+          var(--sky)
+        );
+      }
+      .bars span:nth-child(3) {
+        height: 55% !important;
+        background: linear-gradient(
+          to top,
+          rgba(167, 139, 250, 0.15),
+          var(--violet)
+        );
+      }
+      .bars span:nth-child(4) {
+        height: 25% !important;
+        background: linear-gradient(
+          to top,
+          rgba(251, 191, 36, 0.15),
+          var(--amber)
+        );
+      }
+      .bars span:nth-child(5) {
+        height: 70% !important;
+      }
+      .bars span:nth-child(6) {
+        height: 40% !important;
+        background: linear-gradient(
+          to top,
+          rgba(56, 189, 248, 0.15),
+          var(--sky)
+        );
+      }
+      .line {
+        position: absolute;
+        top: 8px;
+        bottom: 8px;
+        width: 1px;
+        background: linear-gradient(
+          to bottom,
+          transparent,
+          rgba(52, 211, 153, 0.95),
+          transparent
+        );
+        box-shadow: 0 0 14px 3px rgba(52, 211, 153, 0.35);
+        animation: sweep 4.5s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+      }
+      @keyframes sweep {
+        0% {
+          left: 0%;
+          opacity: 0;
+        }
+        8% {
+          opacity: 0.9;
+        }
+        92% {
+          opacity: 0.55;
+        }
+        100% {
+          left: 100%;
+          opacity: 0;
+        }
+      }
+      footer {
+        margin-top: 28px;
+        color: var(--dim);
+        font-size: 0.8rem;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .line {
+          animation: none;
+          left: 42%;
+          opacity: 0.35;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <p class="kicker">Open source · local-first</p>
+      <h1>GrokfMRI</h1>
+      <p class="tagline">
+        Memory Observatory for Grok — see how
+        <strong style="color: #e4e4e7; font-weight: 600"
+          >/flush</strong
+        >,
+        <strong style="color: #e4e4e7; font-weight: 600">/remember</strong>, and
+        <strong style="color: #e4e4e7; font-weight: 600">/dream</strong>
+        accumulate across your projects, without leaving your machine.
+      </p>
+
+      <div class="scan" aria-hidden="true">
+        <div class="bars">
+          <span style="height: 45%"></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span style="height: 30%"></span>
+          <span style="height: 60%; background: linear-gradient(to top, rgba(52,211,153,0.2), var(--emerald))"></span>
+        </div>
+        <div class="line"></div>
+      </div>
+
+      <div class="card">
+        <h2>What it is</h2>
+        <p>
+          A <strong style="color: #e4e4e7">read-only</strong> Next.js dashboard
+          that parses Grok’s experimental memory store
+          (<code>~/.grok/memory/</code>) and turns it into a timeline, workspace
+          cards, system health, and an activity scan chart.
+        </p>
+        <div class="chips">
+          <span class="chip flush"><i></i>flush</span>
+          <span class="chip end"><i></i>session-end</span>
+          <span class="chip remember"><i></i>remember</span>
+          <span class="chip dream"><i></i>dream</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>What it is not</h2>
+        <ul>
+          <li>Not a replacement for Grok’s <code>/memory</code> browser</li>
+          <li>Not a cloud app — no Vercel deploy of your memory contents</li>
+          <li>Does not write to memory or scrape full chat transcripts</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Run it</h2>
+        <p>
+          Requires Node and Grok memory enabled
+          (<code>[memory] enabled = true</code> in config).
+        </p>
+        <p>
+          <code>npm install && npm run dev</code> →
+          <code>http://127.0.0.1:3000</code>
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>Source</h2>
+        <p>
+          GitHub (MIT):
+          <a
+            class="cta"
+            href="https://github.com/MichaelPlumb32207/GrokfMRI"
+            >github.com/MichaelPlumb32207/GrokfMRI →</a
+          >
+        </p>
+      </div>
+
+      <footer>
+        Local · 127.0.0.1 · your notes stay on your disk. Built for people who
+        use Grok across many repos and want to <em>see</em> memory form, not dig
+        Markdown by hand.
+      </footer>
+    </div>
+  </body>
+</html>

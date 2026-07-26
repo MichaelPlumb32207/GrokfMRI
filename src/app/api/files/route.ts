@@ -40,7 +40,6 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(
         {
           error: `File too large (${st.size} bytes; max ${MAX_BYTES})`,
-          path: resolved,
           relativePath: path.relative(memoryRoot, resolved),
         },
         { status: 413 },
@@ -57,9 +56,14 @@ export async function GET(req: NextRequest) {
     }
 
     const content = fs.readFileSync(resolved, "utf8");
+    const relativePath = path.relative(memoryRoot, resolved);
+    // Prefer relative paths in API responses so demos/screenshots don't leak
+    // absolute home directories. Absolute path is opt-in for local tooling.
+    const includeAbsolute =
+      req.nextUrl.searchParams.get("absolute") === "1";
     return NextResponse.json({
-      path: resolved,
-      relativePath: path.relative(memoryRoot, resolved),
+      relativePath,
+      ...(includeAbsolute ? { path: resolved } : {}),
       bytes: st.size,
       mtime: st.mtime.toISOString(),
       content,

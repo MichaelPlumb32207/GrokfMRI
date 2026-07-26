@@ -13,7 +13,7 @@ A **local-only** dashboard that reads Grok’s experimental memory store and sho
 ## Run
 
 ```bash
-cd /Users/michaelplumb/GrokfMRI
+cd /path/to/GrokfMRI
 npm install
 npm run dev
 ```
@@ -57,6 +57,11 @@ Then hit **Refresh** in GrokfMRI.
 - Content stays on your machine
 - `/api/files` refuses paths outside the memory root
 - Do not point a public deploy at this server
+- Share one-pager: open `/share.html` while `npm run dev` is running (or open `public/share.html` as a file)
+
+## Security notes
+
+See root [SECURITY.md](../SECURITY.md). Scripts bind `127.0.0.1` by default.
 
 ## Troubleshooting
 

@@ -21,3 +21,4 @@ Placement: `spine` | `rib` + outcome leg name
 |----|-----|-----------|--------|------|
 | FEAT-000 | P0 | spine · Legs 1–4 | done | v1 observatory: parse + API + dashboard |
 | FEAT-004 | P1 | rib · Leg 1 | done | Activity scan chart (embed + /scan + expand/fullscreen) |
+| ENH-005 | P1 | rib · Leg 1 | done | Scan-line animation + public-readiness (LICENSE, SECURITY, share.html, path hygiene) |

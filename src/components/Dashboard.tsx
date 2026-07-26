@@ -1,12 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import Link from "next/link";
-import type {
-  MemoryEvent,
-  MemoryEventType,
-  ObservatorySnapshot,
-} from "@/lib/memory";
+import type { MemoryEvent } from "@/lib/memory";
+import { useMemorySnapshot } from "@/hooks/useMemorySnapshot";
 import { HealthBar } from "./HealthBar";
 import { WorkspaceGrid } from "./WorkspaceGrid";
 import { Timeline } from "./Timeline";
@@ -15,77 +12,30 @@ import { MemoryPanel } from "./MemoryPanel";
 import { ActivityScan, ActivityScanOverlay } from "./ActivityScan";
 import { EVENT_COLORS } from "@/lib/format";
 
-const ALL_TYPES: MemoryEventType[] = [
-  "flush",
-  "session_end",
-  "remember",
-  "dream",
-  "unknown",
-];
-
 export function Dashboard() {
-  const [snap, setSnap] = useState<ObservatorySnapshot | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [workspaceFilter, setWorkspaceFilter] = useState<string | null>(null);
-  const [typeFilters, setTypeFilters] = useState<Set<MemoryEventType>>(
-    () => new Set(ALL_TYPES),
-  );
+  const {
+    snap,
+    error,
+    loading,
+    load,
+    workspaceFilter,
+    setWorkspaceFilter,
+    typeFilters,
+    toggleType,
+    filteredEvents,
+    allTypes,
+  } = useMemorySnapshot();
+
   const [selectedEvent, setSelectedEvent] = useState<MemoryEvent | null>(null);
   const [tab, setTab] = useState<"timeline" | "workspaces" | "scan">(
     "timeline",
   );
   const [scanExpanded, setScanExpanded] = useState(false);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/snapshot");
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || res.statusText);
-      setSnap(data as ObservatorySnapshot);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    // Initial filesystem scan — external system sync (memory store).
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetch on mount
-    void load();
-  }, [load]);
-
-  const filteredEvents = useMemo(() => {
-    if (!snap) return [];
-    return snap.events.filter((e) => {
-      if (workspaceFilter && e.workspaceId !== workspaceFilter) return false;
-      if (!typeFilters.has(e.type)) return false;
-      return true;
-    });
-  }, [snap, workspaceFilter, typeFilters]);
-
-  const toggleType = (t: MemoryEventType) => {
-    setTypeFilters((prev) => {
-      const next = new Set(prev);
-      if (next.has(t)) next.delete(t);
-      else next.add(t);
-      return next;
-    });
-  };
-
   const requestBrowserFullscreen = useCallback(() => {
     setScanExpanded(true);
-    // Defer until overlay mounts, then try Fullscreen API on documentElement
     requestAnimationFrame(() => {
-      const el = document.documentElement;
-      if (el.requestFullscreen) {
-        void el.requestFullscreen().catch(() => {
-          /* overlay still works without browser FS */
-        });
-      }
+      void document.documentElement.requestFullscreen?.().catch(() => {});
     });
   }, []);
 
@@ -149,7 +99,6 @@ export function Dashboard() {
 
         {snap ? <HealthBar health={snap.health} /> : null}
 
-        {/* Compact scan always visible under health */}
         {snap ? (
           <ActivityScan
             events={filteredEvents}
@@ -204,7 +153,7 @@ export function Dashboard() {
           </label>
 
           <div className="flex flex-wrap items-center gap-1.5">
-            {ALL_TYPES.map((t) => {
+            {allTypes.map((t) => {
               const on = typeFilters.has(t);
               const c = EVENT_COLORS[t];
               return (

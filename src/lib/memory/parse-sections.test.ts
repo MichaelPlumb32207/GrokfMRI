@@ -34,7 +34,7 @@ describe("parseMemorySections", () => {
 
   it("extracts project path from workspace MEMORY title", () => {
     expect(extractProjectPath(load("workspace-template.md"))).toBe(
-      "/Users/michaelplumb/Fetch",
+      "/home/demo/projects/fetch",
     );
   });
 });

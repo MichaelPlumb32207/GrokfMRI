@@ -73,15 +73,13 @@ export function EventDetail({
       </div>
 
       <div className="flex-1 space-y-4 overflow-y-auto p-4 text-sm">
-        <Field label="Path">
+        <Field label="Path (under memory root)">
           <code className="break-all text-xs text-emerald-300/90">
-            {event.path}
-          </code>
-        </Field>
-        <Field label="Relative">
-          <code className="break-all text-xs text-zinc-400">
             {event.relativePath}
           </code>
+        </Field>
+        <Field label="Local absolute">
+          <code className="break-all text-xs text-zinc-500">{event.path}</code>
         </Field>
         {event.sessionId ? (
           <Field label="Session ID">

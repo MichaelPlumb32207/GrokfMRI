@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import Link from "next/link";
 import type { MemoryEvent, MemoryEventType } from "@/lib/memory";
 import {
@@ -135,11 +135,15 @@ export function ActivityScan({
       ) : null}
 
       {series.days.length === 0 ? (
-        <div className="flex h-28 items-center justify-center rounded-lg border border-dashed border-zinc-800 bg-zinc-950/50 text-xs text-zinc-500">
+        <div className="relative flex h-28 items-center justify-center overflow-hidden rounded-lg border border-dashed border-zinc-800 bg-zinc-950/50 text-xs text-zinc-500">
+          <div
+            className="grokfmri-scan-line pointer-events-none absolute inset-y-0 w-px bg-emerald-400/70 shadow-[0_0_12px_2px_rgba(52,211,153,0.45)]"
+            aria-hidden
+          />
           Quiet field — flush or remember something, then refresh
         </div>
       ) : (
-        <div className="relative">
+        <div className="relative overflow-hidden rounded-lg">
           {/* Clinical grid backdrop */}
           <div
             className="pointer-events-none absolute inset-0 rounded-lg opacity-40"
@@ -150,6 +154,12 @@ export function ActivityScan({
               `,
               backgroundSize: "24px 24px",
             }}
+          />
+          {/* Sweeping scan line (respects prefers-reduced-motion) */}
+          <div
+            className="grokfmri-scan-line pointer-events-none absolute inset-y-2 z-[1] w-px bg-gradient-to-b from-transparent via-emerald-400/90 to-transparent shadow-[0_0_14px_3px_rgba(52,211,153,0.35)]"
+            style={{ left: 0 }}
+            aria-hidden
           />
           <svg
             viewBox={`0 0 ${width} ${chartH}`}
@@ -428,11 +438,6 @@ export function ActivityScanOverlay({
   open: boolean;
   onClose: () => void;
 }) {
-  const panelRef = useCallback((node: HTMLDivElement | null) => {
-    // stored only for fullscreen target via attribute below
-    if (node) node.dataset.scanPanel = "1";
-  }, []);
-
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -456,7 +461,9 @@ export function ActivityScanOverlay({
           <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-emerald-400/80">
             Expanded scan
           </p>
-          <p className="text-xs text-zinc-500">Esc to close · filters follow main dashboard</p>
+          <p className="text-xs text-zinc-500">
+            Esc to close · filters follow main dashboard
+          </p>
         </div>
         <div className="flex gap-2">
           <Link
@@ -474,10 +481,7 @@ export function ActivityScanOverlay({
           </button>
         </div>
       </div>
-      <div
-        ref={panelRef}
-        className="mx-auto w-full max-w-6xl flex-1 overflow-auto"
-      >
+      <div className="mx-auto w-full max-w-6xl flex-1 overflow-auto">
         <ActivityScan
           events={events}
           size="full"
